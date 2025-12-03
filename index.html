@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marnissi Barbershop - Reservas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <button class="lang-btn active" onclick="changeLanguage('es')" id="btn-es">Castellano</button>
+        <button class="lang-btn" onclick="changeLanguage('ca')" id="btn-ca">Català</button>
+    </div>
+
+    <!-- Home Page -->
+    <div id="home-page" class="page active">
+        <!-- Admin Access Button (only on home page) -->
+        <a href="admin.html" class="admin-access-btn" title="Panel de Administración">
+            <span>🔐</span>
+        </a>
+
+        <div class="container">
+            <div class="hero">
+                <h1>Marnissi Barbershop</h1>
+                <p id="hero-text">Estilo, precisión y elegancia. Reserva tu cita hoy mismo y vive la experiencia
+                    premium.</p>
+                <button class="btn-primary" onclick="showBookingPage()">
+                    <span id="book-btn-text">Reservar Cita</span>
+                </button>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">✂️</div>
+                    <h3 id="feature1-title">Profesionales Expertos</h3>
+                    <p id="feature1-text">Nuestro equipo de barberos cuenta con años de experiencia en cortes clásicos y
+                        modernos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3 id="feature2-title">Reserva Online</h3>
+                    <p id="feature2-text">Sistema inteligente de reservas que se sincroniza automáticamente con tu
+                        calendario.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3 id="feature3-title">Experiencia Premium</h3>
+                    <p id="feature3-text">Ambiente exclusivo y atención personalizada para cada cliente.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 id="schedule-title">Horario</h2>
+                <p id="schedule-days">Lunes a Sábado</p>
+                <p class="schedule">09:00 - 14:00 | 16:00 - 21:00</p>
+                <p style="margin-top: 1rem;" id="schedule-closed">Domingo: Cerrado</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Page -->
+    <div id="booking-page" class="page">
+        <div class="container">
+            <button class="btn-back" onclick="showHomePage()">← <span id="back-btn">Volver</span></button>
+
+            <div class="card booking-card">
+                <h2 id="booking-title">Reserva tu Cita</h2>
+
+                <div id="error-message" class="error-message" style="display: none;"></div>
+
+                <!-- Step 1: Select Date & Time -->
+                <div id="step-1" class="booking-step active">
+                    <div class="input-group">
+                        <label id="label-date">Selecciona una fecha</label>
+                        <input type="date" id="booking-date" min="">
+                    </div>
+
+                    <div id="slots-container" style="display: none;">
+                        <h3 id="available-slots-title">Horarios Disponibles</h3>
+                        <div id="loading" class="loader" style="display: none;"></div>
+                        <div id="slots-grid" class="calendar-grid"></div>
+                        <p id="no-slots" style="display: none; color: var(--text-secondary); text-align: center;"></p>
+                    </div>
+                </div>
+
+                <!-- Step 2: Personal Info -->
+                <div id="step-2" class="booking-step">
+                    <div id="selected-info" style="margin-bottom: 2rem;">
+                        <p id="selected-datetime"></p>
+                        <button type="button" class="btn-secondary btn-small" onclick="backToStep1()">
+                            <span id="change-time-btn">Cambiar hora</span>
+                        </button>
+                    </div>
+
+                    <form id="booking-form">
+                        <div class="input-group">
+                            <label id="label-name">Nombre Completo</label>
+                            <input type="text" id="customer-name" required placeholder="Ej. Juan Pérez">
+                        </div>
+
+                        <div class="input-group">
+                            <label id="label-phone">Teléfono</label>
+                            <input type="tel" id="customer-phone" required placeholder="Ej. 600 000 000">
+                        </div>
+
+                        <div class="input-group">
+                            <label id="label-email">Correo Electrónico</label>
+                            <input type="email" id="customer-email" required placeholder="Ej. juan@email.com">
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="submit-btn">
+                            <span id="confirm-btn-text">Confirmar Reserva</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Page -->
+    <div id="success-page" class="page">
+        <div class="container" style="text-align: center;">
+            <div class="card">
+                <div class="success-icon">✓</div>
+                <h1 style="color: var(--success); font-size: 2rem;" id="success-title">¡Reserva Confirmada!</h1>
+                <p id="success-message">Gracias por confiar en Marnissi Barbershop.</p>
+
+                <div id="appointment-details" class="appointment-details"></div>
+
+                <button class="btn-primary" onclick="showHomePage()" style="margin-top: 2rem;">
+                    <span id="home-btn">Volver al Inicio</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Page -->
+    <div id="cancel-page" class="page">
+        <div class="container" style="text-align: center;">
+            <div class="card">
+                <h2 id="cancel-title">Cancelar Cita</h2>
+                <div id="cancel-content"></div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2025 Marnissi Barbershop</p>
+            <p class="powered-by">
+                powered by <a href="https://raularpal.github.io/Arpal_web/" target="_blank" class="arpal-link">
+                    <span class="arpal-brand">Arpal</span>
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <!-- App Scripts -->
+    <script src="config.js"></script>
+    <script src="translations.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
